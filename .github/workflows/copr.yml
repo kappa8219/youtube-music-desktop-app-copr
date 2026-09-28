@@ -1,0 +1,66 @@
+name: COPR build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .copr/Makefile
+      - youtube-music-desktop-app.spec
+      - .github/workflows/copr.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: fedora:45
+
+    steps:
+      - name: Install build dependencies
+        run: dnf --assumeyes install git python3-pip
+
+      - uses: actions/checkout@v4
+
+      - name: Install COPR CLI
+        run: python3 -m pip install copr-cli
+
+      - name: Configure COPR CLI
+        env:
+          COPR_LOGIN: ${{ secrets.COPR_LOGIN }}
+          COPR_TOKEN: ${{ secrets.COPR_TOKEN }}
+          COPR_USERNAME: ${{ secrets.COPR_USERNAME }}
+        run: |
+          mkdir -p ~/.config
+          cat > ~/.config/copr <<EOF
+          [copr-cli]
+          login = $COPR_LOGIN
+          username = $COPR_USERNAME
+          token = $COPR_TOKEN
+          copr_url = https://copr.fedorainfracloud.org
+          EOF
+
+      - name: Configure COPR chroots
+        run: |
+          copr-cli modify ok8219/youtube-music-desktop-app \
+            --chroot fedora-43-x86_64 \
+            --chroot fedora-44-x86_64 \
+            --chroot fedora-45-x86_64 \
+            --chroot fedora-rawhide-x86_64
+
+      - name: Submit COPR SCM build
+        run: |
+          copr-cli buildscm ok8219/youtube-music-desktop-app \
+            --clone-url https://github.com/${{ github.repository }}.git \
+            --commit "${{ github.sha }}" \
+            --subdir .copr \
+            --spec ../youtube-music-desktop-app.spec \
+            --method make_srpm \
+            --enable-net on \
+            --nowait \
+            -r fedora-43-x86_64 \
+            -r fedora-44-x86_64 \
+            -r fedora-45-x86_64 \
+            -r fedora-rawhide-x86_64
