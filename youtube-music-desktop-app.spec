@@ -4,7 +4,7 @@
 
 Name:           youtube-music-desktop-app
 Version:        2.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        YouTube Music Desktop App
 License:        GPL-3.0-only
 URL:            https://ytmdesktop.app/
@@ -43,6 +43,9 @@ echo "%{upstream_sha256}  %{upstream_rpm}" | sha256sum --check
 
 %install
 rpm2cpio %{upstream_rpm} | cpio --extract --make-directories --quiet --directory %{buildroot}
+desktop_file=%{buildroot}%{_datadir}/applications/youtube-music-desktop-app.desktop
+awk '!/^StartupWMClass=/ || !seen++' "$desktop_file" > "$desktop_file.tmp"
+mv "$desktop_file.tmp" "$desktop_file"
 rm -rf %{buildroot}%{_prefix}/lib/.build-id
 
 %check
@@ -58,6 +61,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/youtube-music-desktop
 %{_datadir}/pixmaps/youtube-music-desktop-app.png
 
 %changelog
+* Mon Nov 02 2026 OK <4374115+kappa8219@users.noreply.github.com> - 2.1.0-2
+- Drop the duplicated StartupWMClass entry in the upstream desktop file
+
 * Mon Nov 02 2026 OK <4374115+kappa8219@users.noreply.github.com> - 2.1.0-1
 - Update to upstream 2.1.0 release
 
