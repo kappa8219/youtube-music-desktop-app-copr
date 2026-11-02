@@ -1,5 +1,5 @@
 spec := youtube-music-desktop-app.spec
-version := 2.0.12
+version := 2.1.0
 release_url := https://github.com/ytmdesktop/ytmdesktop/releases/download/v$(version)
 sources := youtube-music-desktop-app-$(version)-1.x86_64.rpm youtube-music-desktop-app-$(version)-1.arm64.rpm
 

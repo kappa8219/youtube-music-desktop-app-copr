@@ -3,7 +3,7 @@
 %global __requires_exclude_from /usr/lib/youtube-music-desktop-app/.*
 
 Name:           youtube-music-desktop-app
-Version:        2.0.12
+Version:        2.1.0
 Release:        1%{?dist}
 Summary:        YouTube Music Desktop App
 License:        GPL-3.0-only
@@ -34,10 +34,10 @@ Music with desktop integration and additional features.
 %prep
 %ifarch x86_64
 %global upstream_rpm %{SOURCE0}
-%global upstream_sha256 6b9e19d6566ed42cabc7709855f4f9a9be1ea95b74d5dc70cd95098aeaf244cf
+%global upstream_sha256 c7c27ca6698f89c665a1b2e68ef29783d679c658e7fa3e4f06c54198e978ee1a
 %else
 %global upstream_rpm %{SOURCE1}
-%global upstream_sha256 3a7c164ff88181e2f7fc9c5bf4ffd598238637b788779624496c6e12374d4e3e
+%global upstream_sha256 427792d13e241d4f05ddc8377baf86087019a620761e1340f53ffa83a524ce82
 %endif
 echo "%{upstream_sha256}  %{upstream_rpm}" | sha256sum --check
 
@@ -58,5 +58,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/youtube-music-desktop
 %{_datadir}/pixmaps/youtube-music-desktop-app.png
 
 %changelog
+* Mon Nov 02 2026 OK <4374115+kappa8219@users.noreply.github.com> - 2.1.0-1
+- Update to upstream 2.1.0 release
+
 * Wed Sep 09 2026 OK <o.kraievyi@gmail.com> - 2.0.12-1
 - Package the upstream YouTube Music Desktop App RPMs for COPR
