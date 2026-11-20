@@ -3,7 +3,7 @@ name: Check upstream YouTube Music Desktop App release
 on:
   schedule:
     - cron: "35 9 * * *"
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   contents: write
