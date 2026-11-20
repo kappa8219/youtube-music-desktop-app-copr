@@ -3,6 +3,7 @@
 
 import hashlib
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -15,7 +16,11 @@ ASSET_BASE = "https://github.com/ytmdesktop/ytmdesktop/releases/download/"
 
 
 def get(url):
-    return urlopen(Request(url, headers={"User-Agent": "ytmdesktop-copr-release-check"}), timeout=180)
+    headers = {"User-Agent": "ytmdesktop-copr-release-check"}
+    token = os.environ.get("GITHUB_TOKEN")
+    if token and url.startswith("https://api.github.com/"):
+        headers["Authorization"] = f"Bearer {token}"
+    return urlopen(Request(url, headers=headers), timeout=180)
 
 
 def replace_once(text, pattern, replacement, label):
